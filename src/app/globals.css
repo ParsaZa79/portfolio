@@ -3,19 +3,84 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
+  )
+  rgb(var(--background-start-rgb));
+}
+
+/* Font Styles */
+.font-clash {
+  font-family: var(--font-clash), system-ui, sans-serif;
+}
+
+/* RTL Support */
+[lang="fa"] {
+  direction: rtl;
+}
+
+[lang="fa"] body {
+  font-family: var(--font-anjoman), system-ui, sans-serif !important;
+}
+
+[lang="fa"] * {
+  text-align: right;
+}
+
+/* Fix Persian text cutoff */
+[lang="fa"] h1,
+[lang="fa"] h2,
+[lang="fa"] h3 {
+  line-height: 1.7 !important;
+  padding-bottom: 0.1em;
+}
+
+/* Adjust Persian text spacing */
+[lang="fa"] .text-7xl {
+  line-height: 1.5;
+}
+
+[lang="fa"] .text-9xl {
+  line-height: 1.4;
+}
+
+[lang="fa"] .leading-normal {
+  line-height: 1.7;
+}
+
+[lang="fa"] .leading-relaxed {
+  line-height: 1.8;
+}
+
+/* Adjust Persian badges and buttons */
+[lang="fa"] .rounded-2xl {
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+}
+
+/* Section Headings RTL Support */
+[lang="fa"] h2 {
+  text-align: center;
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+
+[lang="fa"] .section-description {
+  text-align: center;
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+
+/* Ensure icons and decorative elements stay in place regardless of text direction */
+[lang="fa"] .icon-container {
+  direction: ltr;
 }
