@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { EnvelopeIcon } from '@heroicons/react/24/outline';
 
@@ -27,16 +27,44 @@ type ContactFormProps = {
 export default function ContactForm({ title, subtitle, form, success, error }: ContactFormProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [isHovered, setIsHovered] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setStatus('loading');
     
-    // Simulate API call
-    setTimeout(() => {
-      setStatus(Math.random() > 0.5 ? 'success' : 'error');
-      setTimeout(() => setStatus('idle'), 3000);
-    }, 1000);
+    try {
+      const response = await fetch('/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      setStatus('error');
+    }
+
+    setTimeout(() => setStatus('idle'), 3000);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -46,7 +74,6 @@ export default function ContactForm({ title, subtitle, form, success, error }: C
       viewport={{ once: true }}
       className="max-w-2xl mx-auto"
     >
-
       <motion.form
         onSubmit={handleSubmit}
         className="relative bg-zinc-900/50 backdrop-blur-sm p-8"
@@ -67,6 +94,9 @@ export default function ContactForm({ title, subtitle, form, success, error }: C
             <label className="block text-sm font-medium mb-2 uppercase tracking-wider">{form.name.label}</label>
             <input
               type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
               className="w-full bg-zinc-800 border-2 border-orange-500 px-4 py-3 rounded-none focus:outline-none focus:border-orange-400 transition-colors placeholder:text-zinc-500"
               placeholder={form.name.placeholder}
               required
@@ -77,6 +107,9 @@ export default function ContactForm({ title, subtitle, form, success, error }: C
             <label className="block text-sm font-medium mb-2 uppercase tracking-wider">{form.email.label}</label>
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               className="w-full bg-zinc-800 border-2 border-orange-500 px-4 py-3 rounded-none focus:outline-none focus:border-orange-400 transition-colors placeholder:text-zinc-500"
               placeholder={form.email.placeholder}
               required
@@ -86,6 +119,9 @@ export default function ContactForm({ title, subtitle, form, success, error }: C
           <div>
             <label className="block text-sm font-medium mb-2 uppercase tracking-wider">{form.message.label}</label>
             <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
               className="w-full bg-zinc-800 border-2 border-orange-500 px-4 py-3 rounded-none focus:outline-none focus:border-orange-400 transition-colors min-h-[150px] placeholder:text-zinc-500"
               placeholder={form.message.placeholder}
               required
