@@ -38,7 +38,7 @@ export default function Home() {
           />
 
           <Card
-            color="teal"
+            color="rose"
             title={t.sections.internationalexperience.title}
             description={t.sections.internationalexperience.description}
             icon={GlobeAltIcon}
@@ -99,9 +99,9 @@ export default function Home() {
       </Section>
 
       <Footer
-        githubUrl="https://github.com/yourusername"
+        githubUrl="https://github.com/ParsaZa79"
         linkedinUrl="https://linkedin.com/in/yourusername"
-        email="your.email@example.com"
+        email="pzeinali.dev@gmail.com"
       />
     </main>
   );
