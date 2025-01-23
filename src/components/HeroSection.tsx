@@ -172,44 +172,8 @@ export default function HeroSection({ t, onLanguageChange }: HeroSectionProps) {
         style={{ opacity: 0.6 }}
       />
 
-      {/* Animated Grid Pattern */}
-      <motion.div 
-        className="absolute inset-0 bg-[linear-gradient(to_right,#18181b_1px,transparent_1px),linear-gradient(to_bottom,#18181b_1px,transparent_1px)] bg-[size:4rem_4rem]"
-        style={{
-          rotateX,
-          rotateY,
-          transformPerspective: "1000px",
-          transformStyle: "preserve-3d",
-        }}
-      />
-
-      {/* Interactive Gradient */}
-      <motion.div 
-        className="absolute inset-0 opacity-50 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(244, 63, 94, 0.15), transparent 35%),
-            radial-gradient(circle at ${100 - mousePosition.x}% ${100 - mousePosition.y}%, rgba(63, 63, 244, 0.1), transparent 25%)
-          `,
-          filter: "blur(40px)",
-        }}
-      />
-
-      {/* Noise Overlay */}
-      <div 
-        className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay"
-        style={{
-          backgroundImage: 'url("/noise.png")',
-          backgroundRepeat: 'repeat',
-          transform: `translate(${(mousePosition.x - 50) * -0.02}px, ${(mousePosition.y - 50) * -0.02}px)`,
-        }}
-      />
-
-      {/* Language Switcher */}
-      <LanguageSwitcher switchText={t.ui.switchLanguage} onChange={onLanguageChange} />
-
-      {/* Main Hero Content */}
-      <div className="flex-grow container mx-auto px-4 pt-32">
+      {/* Main Hero Content - Moved above grid patterns */}
+      <div className="flex-grow container mx-auto px-4 pt-32 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -269,8 +233,97 @@ export default function HeroSection({ t, onLanguageChange }: HeroSectionProps) {
         </div>
       </div>
 
+      {/* Animated Grid Pattern */}
+      <motion.div 
+        className="absolute inset-0"
+        style={{
+          rotateX,
+          rotateY,
+          transformPerspective: "1000px",
+          transformStyle: "preserve-3d",
+          backgroundImage: `
+            linear-gradient(to right, #18181b 1px, transparent 1px),
+            linear-gradient(to bottom, #18181b 1px, transparent 1px),
+            radial-gradient(
+              circle at ${mousePosition.x}% ${mousePosition.y}%, 
+              rgba(244, 63, 94, 0.1) 0%, 
+              transparent 20%
+            )
+          `,
+          backgroundSize: '4rem 4rem, 4rem 4rem, 100% 100%',
+          backgroundPosition: '0 0, 0 0, 0 0',
+          backgroundRepeat: 'repeat, repeat, no-repeat'
+        }}
+        whileHover={{
+          scale: 1.01,
+          transition: {
+            type: "spring",
+            stiffness: 400,
+            damping: 30
+          }
+        }}
+        animate={{
+          backgroundSize: mousePosition.x > 0 ? '4rem 4rem, 4rem 4rem, 100% 100%' : '4rem 4rem',
+          transition: { duration: 0.3 }
+        }}
+      />
+
+      {/* Add this new element below the existing grid pattern */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: mousePosition.x > 0 && mousePosition.y > 0 ? 1 : 0,
+          backgroundPosition: `${mousePosition.x}% ${mousePosition.y}%`
+        }}
+        transition={{ duration: 0.3 }}
+        style={{
+          backgroundImage: 'radial-gradient(circle at center, rgba(244, 63, 94, 0.15) 0%, transparent 70%)',
+          backgroundSize: '200% 200%',
+        }}
+      />
+
+      {/* Enhanced Interactive Gradient */}
+      <motion.div 
+        className="absolute inset-0 opacity-50 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(
+              circle at ${mousePosition.x}% ${mousePosition.y}%, 
+              rgba(244, 63, 94, 0.15) 0%, 
+              transparent 25%
+            ),
+            radial-gradient(
+              circle at ${mousePosition.x}% ${mousePosition.y}%, 
+              rgba(244, 63, 94, 0.1) 0%, 
+              transparent 50%
+            )
+          `,
+          filter: "blur(20px)",
+          transition: "background 0.2s ease-out"
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: mousePosition.x > 0 ? 0.5 : 0,
+          transition: { duration: 0.3 }
+        }}
+      />
+
+      {/* Noise Overlay */}
+      <div 
+        className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay"
+        style={{
+          backgroundImage: 'url("/noise.png")',
+          backgroundRepeat: 'repeat',
+          transform: `translate(${(mousePosition.x - 50) * -0.02}px, ${(mousePosition.y - 50) * -0.02}px)`,
+        }}
+      />
+
+      {/* Language Switcher */}
+      <LanguageSwitcher switchText={t.ui.switchLanguage} onChange={onLanguageChange} />
+
       {/* Scroll Indicator */}
-      <div className="pb-12">
+      <div className="pb-12 relative z-10">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
